@@ -45,10 +45,7 @@
             <td>{{ formatNumber(event.todayTriggers) }}</td>
             <td>{{ formatDate(event.createdAt) }}</td>
             <td>
-              <router-link :to="`/track/detail/${event.id}`" class="action-btn view-btn">
-                查看
-              </router-link>
-              <button class="action-btn edit-btn" @click="editEvent(event)">
+              <button class="action-btn edit-btn" @click="startEditEvent(event)">
                 编辑
               </button>
               <button class="action-btn delete-btn" @click="deleteEvent(event.id)">
@@ -58,6 +55,54 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- 流失率排行榜 -->
+    <div class="churn-rate-ranking">
+      <h3>流失率排行榜</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>页面</th>
+            <th>访问量</th>
+            <th>流失量</th>
+            <th>流失率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="page in churnRateRanking" :key="page.page">
+            <td>{{ page.page }}</td>
+            <td>{{ page.visits }}</td>
+            <td>{{ page.exits }}</td>
+            <td>{{ page.churnRate }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 编辑事件表单 -->
+    <div v-if="isEditing" class="edit-event-form">
+      <h3>编辑事件</h3>
+      <form @submit.prevent="saveEvent">
+        <div>
+          <label for="eventName">事件名称</label>
+          <input v-model="currentEvent.name" id="eventName" type="text" required />
+        </div>
+        <div>
+          <label for="eventDescription">事件描述</label>
+          <textarea v-model="currentEvent.description" id="eventDescription" required></textarea>
+        </div>
+        <div>
+          <label for="eventType">事件类型</label>
+          <select v-model="currentEvent.type" id="eventType" required>
+            <option value="pv">页面浏览</option>
+            <option value="click">点击事件</option>
+            <option value="custom">自定义事件</option>
+          </select>
+        </div>
+        <button type="submit">保存</button>
+        <button type="button" @click="cancelEdit">取消</button>
+      </form>
     </div>
   </div>
 </template>
@@ -72,6 +117,8 @@ const router = useRouter()
 // 搜索和筛选
 const searchKey = ref('')
 const typeFilter = ref('')
+const isEditing = ref(false)
+const currentEvent = ref({})
 
 // 模拟数据
 const events = ref([
@@ -114,6 +161,29 @@ const events = ref([
   }
 ])
 
+// 流失率数据
+const pageData = [
+  { page: '首页', visits: 1000, exits: 200 },
+  { page: '产品详情', visits: 800, exits: 150 },
+  { page: '购物车', visits: 600, exits: 300 },
+  { page: '结算', visits: 400, exits: 100 },
+]
+
+// 计算流失率
+const calculateChurnRate = (data) => {
+  return data.map(item => {
+    const churnRate = ((item.exits / item.visits) * 100).toFixed(2);
+    return { ...item, churnRate };
+  });
+};
+
+// 流失率排行榜
+const churnRateRanking = computed(() => {
+  const churnRates = calculateChurnRate(pageData);
+  churnRates.sort((a, b) => b.churnRate - a.churnRate); // 按流失率降序排序
+  return churnRates;
+});
+
 // 事件类型名称映射
 const getEventTypeName = (type) => {
   const typeMap = {
@@ -136,9 +206,24 @@ const filteredEvents = computed(() => {
   })
 })
 
-// 编辑事件
-const editEvent = (event) => {
-  router.push(`/track/edit/${event.id}`)
+// 开始编辑事件
+const startEditEvent = (event) => {
+  currentEvent.value = { ...event } // 复制事件数据
+  isEditing.value = true
+}
+
+// 保存事件
+const saveEvent = () => {
+  const index = events.value.findIndex(e => e.id === currentEvent.value.id)
+  if (index !== -1) {
+    events.value[index] = currentEvent.value // 更新事件数据
+  }
+  isEditing.value = false // 结束编辑状态
+}
+
+// 取消编辑
+const cancelEdit = () => {
+  isEditing.value = false
 }
 
 // 删除事件
@@ -223,11 +308,6 @@ th {
   text-decoration: none;
 }
 
-.view-btn {
-  background: #52c41a;
-  color: white;
-}
-
 .edit-btn {
   background: #faad14;
   color: white;
@@ -240,5 +320,29 @@ th {
 
 .action-btn:hover {
   opacity: 0.8;
+}
+
+.churn-rate-ranking {
+  margin-top: 20px;
+}
+
+.churn-rate-ranking table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.churn-rate-ranking th,
+.churn-rate-ranking td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.edit-event-form {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: #f9f9f9;
 }
 </style>

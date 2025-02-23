@@ -13,7 +13,7 @@
         <div class="nav-group-title">埋点管理</div>
         <router-link to="/track/guide" class="nav-item" active-class="active">
           <span class="nav-icon">📘</span>
-          埋点教程
+          埋点意义
         </router-link>
         <router-link to="/track/overview" class="nav-item" active-class="active">
           <span class="nav-icon">📊</span>
