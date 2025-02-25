@@ -840,6 +840,16 @@ caniuse-lite@^1.0.30001688:
   resolved "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001695.tgz"
   integrity sha512-vHyLade6wTgI2u1ec3WQBxv+2BrTERV28UXQu9LO6lZ9pYeMk34vjXFLOxo1A4UBA8XTL4njRQZdno/yYaSmWw==
 
+chat.js@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/chat.js/-/chat.js-1.0.2.tgz#0437cd4f59d54e56a43b7509de0a6f5355d1be2d"
+  integrity sha512-0Q0FnNyFc+xiZoe2dexBbHBDf2F9CSt2bpBgjZ8gv4yghgTrv+G/EB9nsUDdt+lA0F/IOb+PlHPoky1SHDMtqQ==
+
+chat@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmmirror.com/chat/-/chat-3.0.0.tgz#efdbf56fa1d2e4cc9dc3f7d5b6ab73310b11de78"
+  integrity sha512-sMqTk+X0JTtQjUpHX/4057IGORpkaU/3qeTk2m3NJusl3a6LA1cUi/8rmZn/6YBEgTXzwzctkafgFHC2KkC2pg==
+
 commander@^13.0.0:
   version "13.1.0"
   resolved "https://registry.npmmirror.com/commander/-/commander-13.1.0.tgz"

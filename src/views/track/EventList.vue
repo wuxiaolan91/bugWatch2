@@ -78,6 +78,8 @@
           </tr>
         </tbody>
       </table>
+      <!-- 图表展示 -->
+      <canvas id="churnRateChart" ref="churnRateChart"></canvas>
     </div>
 
     <!-- 编辑事件表单 -->
@@ -108,9 +110,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { formatDate, formatNumber } from '@/utils/format'
 import { useRouter } from 'vue-router'
+import { Chart, registerables } from 'chart.js'
+
+Chart.register(...registerables)
 
 const router = useRouter()
 
@@ -232,6 +237,54 @@ const deleteEvent = (id) => {
     events.value = events.value.filter(e => e.id !== id)
   }
 }
+
+// 绘制图表
+const drawChart = () => {
+  const ctx = document.getElementById('churnRateChart').getContext('2d');
+  const churnRates = churnRateRanking.value;
+
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: churnRates.map(page => page.page),
+      datasets: [
+        {
+          label: '访问量',
+          data: churnRates.map(page => page.visits),
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        },
+        {
+          label: '流失量',
+          data: churnRates.map(page => page.exits),
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        },
+        {
+          label: '流失率',
+          data: churnRates.map(page => page.churnRate),
+          backgroundColor: 'rgba(255, 206, 86, 0.2)',
+          borderColor: 'rgba(255, 206, 86, 1)',
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+// 在组件挂载后绘制图表
+onMounted(() => {
+  drawChart();
+});
 </script>
 
 <style scoped>
