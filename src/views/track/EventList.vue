@@ -113,9 +113,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { formatDate, formatNumber } from '@/utils/format'
 import { useRouter } from 'vue-router'
-import { Chart, registerables } from 'chart.js'
+// import { Chart, registerables } from 'chart.js'
 
-Chart.register(...registerables)
+// Chart.register(...registerables)
 
 const router = useRouter()
 
