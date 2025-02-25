@@ -283,7 +283,7 @@ const drawChart = () => {
 
 // 在组件挂载后绘制图表
 onMounted(() => {
-  drawChart();
+  // drawChart();
 });
 </script>
 
